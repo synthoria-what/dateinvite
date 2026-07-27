@@ -109,7 +109,7 @@ export default function Home() {
         <section className="success-card" aria-live="polite">
           <div className="success-heart" aria-hidden="true">♥</div>
           <p className="eyebrow">официально подтверждено</p>
-          <h1>Ура, это свидание!</h1>
+          <h1>Ура, мы выйдем на улицу!</h1>
           <p className="success-copy">
             Тогда я всё организую. Тебе остаётся только быть в хорошем настроении.
           </p>
@@ -246,11 +246,10 @@ export default function Home() {
           <h1 id="invite-title">
             Пойдёшь со мной
             <br />
-            <em>на свидание?</em>
+            <em>гулять?</em>
           </h1>
           <p className="subtitle">
-            Обещаю вкусный ужин, прогулку без спешки и вечер, который захочется
-            повторить.
+            Обещать ничего не могу, но будет жоски вайб) 😊
           </p>
         </div>
 
@@ -262,7 +261,7 @@ export default function Home() {
           <div>
             <span className="date-label">Когда встречаемся</span>
             <strong className="date-value">Выберем вместе</strong>
-            <span className="date-place">Место расскажу после ответа</span>
+            <span className="date-place">Мы пойдем плотненько в кото-кофе</span>
           </div>
         </div>
 
