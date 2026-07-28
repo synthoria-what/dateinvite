@@ -104,6 +104,37 @@ export default function Home() {
   }
 
   if (step === "confirmed" && selectedDate) {
+    const confirmMeeting = async () => {
+      if (!selectedDate) {
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8000/send_notification", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notify_at: selectedDate.toISOString(),
+          }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(
+            `Ошибка отправки уведомления: ${response.status} ${errorText}`
+          );
+        }
+
+        const result = await response.json();
+        console.log("Уведомление отправлено:", result);
+
+        setStep("confirmed");
+      } catch (error) {
+        console.error(error);
+      }
+    };
     return (
       <main className="page page--accepted">
         <section className="success-card" aria-live="polite">
@@ -117,7 +148,7 @@ export default function Home() {
             <span>встречаемся</span>
             <strong>{formatSelectedDate(selectedDate)}</strong>
           </div>
-          <button className="text-button" type="button" onClick={() => setStep("date")}>
+          <button className="text-button" type="button" onClick={confirmMeeting}>
             выбрать другую дату
           </button>
         </section>

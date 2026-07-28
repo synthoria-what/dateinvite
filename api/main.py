@@ -4,6 +4,7 @@ import os
 from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
 from aiogram import Bot
 from pydantic import BaseModel, field_validator
 from dotenv import load_dotenv
@@ -11,6 +12,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 WEEKDAYS = (
     "понедельник",
