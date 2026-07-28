@@ -261,7 +261,7 @@ export default function Home() {
           <div>
             <span className="date-label">Когда встречаемся</span>
             <strong className="date-value">Выберем вместе</strong>
-            <span className="date-place">Мы пойдем плотненько в кото-кофе</span>
+            <span className="date-place">Мы пойдем плотненько в кото- кофе</span>
           </div>
         </div>
 
