@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import datetime
 import os
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, status
 from aiogram import Bot
 from pydantic import BaseModel, field_validator
 from dotenv import load_dotenv
@@ -32,6 +32,13 @@ async def send_notification(message: NotificationMessage):
     
     bot_message = BotMessage(message=f"Встреча составлена, она будет в {message.notify_at}", date=message.notify_at)
     
-    
-    async with Bot(token=os.getenv("TELEGRAM_TOKEN")) as bot:
-        bot.send_message(os.getenv("MY_CHAT_ID"), text=bot_message.message)
+    try:
+        async with Bot(token=os.getenv("TELEGRAM_TOKEN")) as bot:
+            await bot.send_message(os.getenv("MY_CHAT_ID"), text=bot_message.message)
+        return {"status": status.HTTP_200_OK,
+                "message": "notification sended"
+                }
+    except Exception as ex:
+        return {"status": status.HTTP_400_BAD_REQUEST,
+                "message": f"notification didnt sended, error: {ex}"
+                }
