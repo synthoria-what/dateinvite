@@ -110,7 +110,7 @@ export default function Home() {
       }
 
       try {
-        const response = await fetch("http://localhost:1112/send_notification", {
+        const response = await fetch("/api/send_notification", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

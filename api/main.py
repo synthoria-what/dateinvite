@@ -17,6 +17,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://frontend:3000",
+        "https://date.synthori.space"
     ],
     allow_credentials=True,
     allow_methods=["*"],
