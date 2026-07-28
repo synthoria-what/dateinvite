@@ -85,7 +85,7 @@ async def send_notification(message: NotificationMessage):
     # print(message)
     # print(message.notify_at)
     
-    bot_message = BotMessage(message=f"{os.getenv("BOT_MESSAGE")}", date=message.notify_at)
+    bot_message = BotMessage(message=f"{os.getenv('BOT_MESSAGE')}", date=message.notify_at)
     
     try:
         async with Bot(token=os.getenv("TELEGRAM_TOKEN")) as bot:
