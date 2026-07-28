@@ -84,6 +84,8 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [noPosition, setNoPosition] = useState(START_NO_POSITION);
   const [noEscapes, setNoEscapes] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const calendarDays = useMemo(
     () => getCalendarDays(visibleMonth),
@@ -103,38 +105,49 @@ export default function Home() {
     );
   }
 
+  async function confirmMeeting() {
+    if (!selectedDate || isSubmitting) {
+      return;
+    }
+
+    const meetingDate = new Date(selectedDate);
+    meetingDate.setHours(15, 0, 0, 0);
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch("/api/send_notification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          notify_at: meetingDate.toISOString(),
+        }),
+      });
+
+      const result = (await response.json()) as {
+        message?: string;
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(result.message ?? result.error ?? "Не удалось отправить уведомление");
+      }
+
+      setStep("confirmed");
+    } catch (error) {
+      console.error(error);
+      setSubmitError(
+        "Не получилось подтвердить дату. Проверь соединение и попробуй ещё раз.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   if (step === "confirmed" && selectedDate) {
-    const confirmMeeting = async () => {
-      if (!selectedDate) {
-        return;
-      }
-
-      try {
-        const response = await fetch("/api/send_notification", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            notify_at: selectedDate.toISOString(),
-          }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `Ошибка отправки уведомления: ${response.status} ${errorText}`
-          );
-        }
-
-        const result = await response.json();
-        console.log("Уведомление отправлено:", result);
-
-        setStep("confirmed");
-      } catch (error) {
-        console.error(error);
-      }
-    };
     return (
       <main className="page page--accepted">
         <section className="success-card" aria-live="polite">
@@ -148,7 +161,7 @@ export default function Home() {
             <span>встречаемся</span>
             <strong>{formatSelectedDate(selectedDate)}</strong>
           </div>
-          <button className="text-button" type="button" onClick={confirmMeeting}>
+          <button className="text-button" type="button" onClick={() => setStep("date")}>
             выбрать другую дату
           </button>
         </section>
@@ -235,7 +248,10 @@ export default function Home() {
                       day: "numeric",
                       month: "long",
                     }).format(date)}
-                    onClick={() => setSelectedDate(date)}
+                    onClick={() => {
+                      setSelectedDate(date);
+                      setSubmitError(null);
+                    }}
                   >
                     {date.getDate()}
                   </button>
@@ -250,13 +266,23 @@ export default function Home() {
               : "Выбери дату в календаре"}
           </div>
 
+          {submitError && (
+            <p className="submit-error" role="alert">
+              {submitError}
+            </p>
+          )}
+
           <button
             className="confirm-button"
             type="button"
-            disabled={!selectedDate}
-            onClick={() => setStep("confirmed")}
+            disabled={!selectedDate || isSubmitting}
+            onClick={confirmMeeting}
           >
-            {selectedDate ? "Подтвердить дату" : "Сначала выбери день"}
+            {isSubmitting
+              ? "Отправляем…"
+              : selectedDate
+                ? "Подтвердить дату"
+                : "Сначала выбери день"}
             <span aria-hidden="true">→</span>
           </button>
         </section>

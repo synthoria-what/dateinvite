@@ -9,6 +9,9 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 3000
+      BACKEND_URL: http://backend:1112
+    depends_on:
+      - backend
     restart: unless-stopped
   backend:
     build:
@@ -16,4 +19,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "1112:1112"
+    env_file:
+      - ./api/.env
     restart: unless-stopped

@@ -3,7 +3,7 @@ import datetime
 import os
 from zoneinfo import ZoneInfo
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from aiogram import Bot
 from pydantic import BaseModel, field_validator
@@ -91,10 +91,11 @@ async def send_notification(message: NotificationMessage):
     try:
         async with Bot(token=os.getenv("TELEGRAM_TOKEN")) as bot:
             await bot.send_message(os.getenv("MY_CHAT_ID"), text=bot_message.text())
-        return {"status": status.HTTP_200_OK,
-                "message": "notification sended"
-                }
+        return {
+            "message": "notification sent"
+        }
     except Exception as ex:
-        return {"status": status.HTTP_400_BAD_REQUEST,
-                "message": f"notification didnt sended, error: {ex}"
-                }
+        raise HTTPException(
+            status_code=502,
+            detail="Telegram notification could not be sent",
+        ) from ex

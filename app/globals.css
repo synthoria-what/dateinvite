@@ -400,6 +400,15 @@ h1 em {
   text-align: center;
 }
 
+.submit-error {
+  width: min(100%, 540px);
+  margin: 10px auto 0;
+  color: var(--red);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+}
+
 .confirm-button {
   width: min(100%, 540px);
   display: flex;
