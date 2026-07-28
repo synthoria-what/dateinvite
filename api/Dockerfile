@@ -6,4 +6,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--port", "1111"]
+EXPOSE 1112
+
+CMD ["uvicorn", "main:app", "--port", "1112", "--host", "0.0.0.0"]

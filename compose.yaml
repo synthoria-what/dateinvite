@@ -14,4 +14,6 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
+    ports:
+      - 1112
     restart: unless-stopped
